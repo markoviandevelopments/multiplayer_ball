@@ -14,6 +14,7 @@ public class SphereController : NetworkBehaviour
     public float airborneDrag = 0f;
     private Rigidbody rb;
     private bool isGrounded;
+    private bool isLooking;
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private Camera playerCamera; // Assign HostCamera for Player1, ClientCamera for Player2
 
@@ -82,8 +83,19 @@ public class SphereController : NetworkBehaviour
             {
                 if (playerCamera != null)
                 {
-                    float rotation = horizontal * rotationSpeed * Time.fixedDeltaTime;
-                    playerCamera.transform.Rotate(0f, rotation, 0f);
+                    
+                    float willheimer;
+                    if (isLooking)
+                    {
+                        willheimer = 0.0f;
+                    }
+                    else
+                    {
+                        willheimer = 1.0f;
+                    }
+                    float rotation = horizontal * rotationSpeed * Time.fixedDeltaTime * willheimer;
+                    float rotation2 = horizontal * rotationSpeed * Time.fixedDeltaTime * (1.0f - willheimer);
+                    playerCamera.transform.Rotate(rotation2, rotation, 0f);
                     Vector3 moveDirection = playerCamera.transform.forward * vertical;
                     rb.AddForce(moveDirection * moveSpeed, ForceMode.Force);
                 }
@@ -105,7 +117,7 @@ public class SphereController : NetworkBehaviour
                 Debug.Log($"Jumped {gameObject.name} with force {jumpForce}");
             }
 
-            if (rb.position.y < -20f)
+            if (rb.position.y < -55f)
             {
                 rb.position = new Vector3(0f, 0.5f, 0f);
                 rb.linearVelocity = Vector3.zero;
@@ -127,6 +139,16 @@ public class SphereController : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.N))
             {
                 moveSpeed /= 2;
+            }
+
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+                isLooking = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                isLooking = true;
             }
 
             if (Input.GetKeyDown(KeyCode.F))

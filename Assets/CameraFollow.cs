@@ -78,7 +78,7 @@ public class CameraFollow : NetworkBehaviour
             Vector3 cameraPos = targetPos + new Vector3(0f, 0.5f, 0f);
             mainCamera.transform.position = cameraPos;
             Vector3 currentRotation = mainCamera.transform.rotation.eulerAngles;
-            mainCamera.transform.rotation = Quaternion.Euler(0f, currentRotation.y, 0f);
+            mainCamera.transform.rotation = Quaternion.Euler(currentRotation.x, currentRotation.y, 0f);
             Debug.Log($"Camera {gameObject.name} in first-person mode at {cameraPos}, rotation {mainCamera.transform.rotation.eulerAngles}");
         }
         else
@@ -89,7 +89,7 @@ public class CameraFollow : NetworkBehaviour
             if (outsideBounds)
             {
                 Vector3 sphereOffset = targetPos - initialSpherePos;
-                Vector3 newCameraPos = initialCameraPos + new Vector3(sphereOffset.x, 0f, sphereOffset.z);
+                Vector3 newCameraPos = initialCameraPos + new Vector3(sphereOffset.x, sphereOffset.y, sphereOffset.z);
                 mainCamera.transform.position = newCameraPos;
                 mainCamera.transform.rotation = defaultRotation;
                 Debug.Log($"Camera {gameObject.name} following {target.name} at {newCameraPos}, rotation {defaultRotation.eulerAngles}");
